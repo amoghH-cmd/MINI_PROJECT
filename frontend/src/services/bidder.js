@@ -1,0 +1,12 @@
+import { api } from './api.js';
+export const getMyOrganisation = () => api.get('/organizations/me').then(r => r.data.organization);
+export const registerOrganisation = body => api.post('/organizations', body).then(r => r.data.organization);
+export const updateOrganisation = body => api.patch('/organizations/me', body).then(r => r.data.organization);
+export const getOpenTenders = () => api.get('/tenders', { params: { status: 'open', pageSize: 100 } }).then(r => r.data.items);
+export const getMySubmissions = () => api.get('/submissions', { params: { pageSize: 100 } }).then(r => r.data.items);
+export const getSubmission = id => api.get(`/submissions/${id}`).then(r => r.data.submission);
+export const createSubmission = tenderId => api.post('/submissions', { tenderId }).then(r => r.data.submission);
+export const submitBid = id => api.post(`/submissions/${id}/submit`).then(r => r.data.submission);
+export const uploadBidDocuments = (id, category, files) => { const form = new FormData(); form.append('category', category); for (const f of files) form.append('files', f); return api.post(`/submissions/${id}/documents`, form).then(r => r.data.documents); };
+export const replaceBidDocument = (id, docId, file) => { const form = new FormData(); form.append('files', file); return api.post(`/submissions/${id}/documents/${docId}/replace`, form).then(r => r.data.document); };
+export const openBidDocument = async id => { const r = await api.get(`/documents/${id}/file`, { responseType: 'blob' }); const url = URL.createObjectURL(r.data); window.open(url, '_blank', 'noopener'); setTimeout(() => URL.revokeObjectURL(url), 60000); };

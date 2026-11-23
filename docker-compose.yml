@@ -1,0 +1,69 @@
+version: '3.9'
+
+# VeriBid – local development stack
+# Starts MongoDB, the Node backend, the Python AI service, and the Vite frontend.
+# NOT for production use.
+#
+# Usage:
+#   docker compose up --build
+#   Visit: http://localhost:5173
+#   Seed:  docker compose exec backend npm run seed
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: bid_compliance
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    env_file:
+      - ./backend/.env
+    environment:
+      MONGO_URI: mongodb://mongo:27017/bid_compliance
+      NODE_ENV: development
+      AI_SERVICE_URL: http://ai-service:8000
+    volumes:
+      - uploads:/app/uploads
+
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./ai-service/.env
+    environment:
+      AI_UPLOAD_ROOT: /uploads
+      SERVICE_HOST: 0.0.0.0
+      SERVICE_PORT: 8000
+    volumes:
+      - uploads:/uploads
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
+  uploads:
