@@ -11,7 +11,7 @@ async def main():
         await pg.goto('http://localhost:5173/login')
         await pg.fill('#email','officer@demo.bcvp.test'); await pg.fill('#password','wrong-password-1'); await pg.click('button[type=submit]')
         await pg.wait_for_selector('[role=alert]'); print('bad login message:', await pg.inner_text('[role=alert]'))
-        await pg.fill('#password','Demo@Procure2026'); await pg.click('button[type=submit]')
+        await pg.fill('#password','Project@2026'); await pg.click('button[type=submit]')
         await pg.wait_for_url('**/officer'); await pg.wait_for_selector('dl[aria-label=Summary]')
         print('summary:', (await pg.inner_text('dl[aria-label=Summary]')).replace('\n',' | '))
         await pg.screenshot(path='/home/claude/s_dash.png')

@@ -19,7 +19,7 @@ const schema = z.object({
   AI_SERVICE_TOKEN: z.string().default(''),
   AI_TIMEOUT_MS: z.coerce.number().int().positive().default(90000),
   WORKER_POLL_MS: z.coerce.number().int().positive().default(2000),
-  SEED_DEMO_PASSWORD: z.string().default('Demo@Procure2026'),
+  SEED_DEMO_PASSWORD: z.string().default('Project@2026'),
 });
 
 const parsed = schema.safeParse(process.env);

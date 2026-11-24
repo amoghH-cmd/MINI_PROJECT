@@ -136,7 +136,7 @@ export default function Login() {
               Fills the email only. The password is the{' '}
               <code className="bg-[#E3E9EE] px-1 rounded">SEED_DEMO_PASSWORD</code> value from the backend{' '}
               <code className="bg-[#E3E9EE] px-1 rounded">.env</code> file{' '}
-              (default: <code className="bg-[#E3E9EE] px-1 rounded">Demo@Procure2026</code>).
+              (default: <code className="bg-[#E3E9EE] px-1 rounded">Project@2026</code>).
             </p>
           </div>
         </Panel>

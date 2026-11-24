@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Activity, Building2, ClipboardList, FileSearch, FolderOpen, LayoutDashboard, LogOut, ShieldCheck, Users } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext.jsx';
@@ -18,6 +19,7 @@ const ICONS = {
 
 export default function Masthead() {
   const { user, logout } = useAuth();
+  const [textSize, setTextSize] = useState(() => document.documentElement.style.fontSize || '100%');
   const meta = user && ROLE_META[user.role];
   const items = user ? NAV[user.role].filter((item) => item.ready) : [];
 
@@ -33,7 +35,7 @@ export default function Masthead() {
       </div>
       <div className="text-size-control" role="group" aria-label="Text size">
         {[['A-', '90%', 'Decrease text size'], ['A', '100%', 'Default text size'], ['A+', '112.5%', 'Increase text size']].map(([label, size, description]) => (
-          <button key={label} type="button" aria-label={description} onClick={() => { document.documentElement.style.fontSize = size; }}>{label}</button>
+          <button key={label} type="button" aria-label={description} aria-pressed={textSize === size} onClick={() => { document.documentElement.style.fontSize = size; setTextSize(size); }}>{label}</button>
         ))}
       </div>
       {user && (

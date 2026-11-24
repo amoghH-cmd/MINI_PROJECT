@@ -7,7 +7,7 @@ import { getOfficerDashboard } from '../../services/tenders.js';
 import { fmtDate, fmtDateTime, humanize } from '../../utils/format.js';
 
 const FIGURES = [
-  ['totalTenders', 'Total tenders', Files],
+  ['totalTenders', 'Total tenders', Files, 'tenders'],
   ['activeTenders', 'Active tenders', FolderOpen],
   ['submittedBids', 'Submitted bids', CalendarClock],
 ];
@@ -26,10 +26,10 @@ export default function Dashboard() {
       {data && (
         <>
           <dl className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5" aria-label="Summary">
-            {FIGURES.map(([k, label, Icon]) => (
-              <div key={k} className="panel metric-card p-5">
+            {FIGURES.map(([k, label, Icon, to]) => (
+              <div key={k} className="panel metric-card relative p-5">
                 <div className="metric-icon mb-3"><Icon size={18} aria-hidden="true" /></div>
-                <dt className="text-sm font-medium text-muted">{label}</dt>
+                <dt className="text-sm font-medium text-muted">{to ? <Link className="metric-link" to={to}>{label}</Link> : label}</dt>
                 <dd className="mt-1 text-3xl leading-tight font-bold tabular-nums text-navy">
                   {data.totals[k] ?? "—"}
                 </dd>
@@ -39,18 +39,18 @@ export default function Dashboard() {
           <div className="grid lg:grid-cols-2 gap-4 items-start">
             <Panel title="Upcoming submission deadlines" actions={<Link to="tenders" className="text-sm text-gov-link">All tenders</Link>}>
               {data.upcomingDeadlines.length === 0 ? <p className="dashboard-empty"><CalendarClock className="shrink-0" size={20} aria-hidden="true" />No open tenders with upcoming deadlines.</p> : (
-                <ul className="divide-y divide-line text-[13px]">
+                <ul className="divide-y divide-line text-sm">
                   {data.upcomingDeadlines.map((t) => (
-                    <li key={t.id} className="px-3 py-2 flex justify-between gap-2"><Link className="text-gov underline" to={`tenders/${t.id}`}>{t.tenderNo}</Link><time dateTime={t.submissionDeadline}>{fmtDateTime(t.submissionDeadline)}</time></li>
+                    <li key={t.id} className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 px-5 py-3"><Link className="text-gov underline" to={`tenders/${t.id}`}>{t.tenderNo}</Link><time dateTime={t.submissionDeadline}>{fmtDateTime(t.submissionDeadline)}</time></li>
                   ))}
                 </ul>
               )}
             </Panel>
             <Panel title="Recent activity on your tenders">
               {data.recentActivity.length === 0 ? <p className="dashboard-empty"><Activity size={20} aria-hidden="true" />No activity yet.</p> : (
-                <ul className="divide-y divide-line text-[12px]">
+                <ul className="divide-y divide-line text-sm">
                   {data.recentActivity.map((a) => (
-                    <li key={a.id} className="px-3 py-2"><div className="text-muted">{fmtDateTime(a.at)}</div><div><b className="font-semibold">{a.actor}:</b> {humanize(a.action)}</div></li>
+                    <li key={a.id} className="px-5 py-3"><div className="text-muted">{fmtDateTime(a.at)}</div><div><b className="font-semibold">{a.actor}:</b> {humanize(a.action)}</div></li>
                   ))}
                 </ul>
               )}
